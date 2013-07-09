@@ -1,0 +1,17 @@
+content warcreate chrome/
+style chrome://global/content/customizeToolbar.xul chrome://warcreate/content/button.css
+
+# Firefox
+overlay	chrome://browser/content/browser.xul chrome://warcreate/content/button.xul
+
+# Thunderbird mail
+overlay	chrome://messenger/content/messenger.xul chrome://warcreate/content/button.xul
+
+# Thunderbird compose
+overlay	chrome://messenger/content/messengercompose/messengercompose.xul chrome://warcreate/content/button.xul
+
+# Thunderbird address book
+overlay	chrome://messenger/content/addressbook/addressbook.xul chrome://warcreate/content/button.xul
+
+# Sunbird
+overlay	chrome://calendar/content/calendar.xul chrome://warcreate/content/button.xul
