@@ -38,7 +38,7 @@
 <!-- button details -->
 <toolbarbutton id="custom-button-1"
   label="Custom"
-  tooltiptext="My custom toolbar button"
+  tooltiptext="WARCreate, click for options"
   oncommand="warcreate[1]()"
   class="toolbarbutton-1 chromeclass-toolbar-additional warcreate"
   />

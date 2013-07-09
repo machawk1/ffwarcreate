@@ -4,6 +4,13 @@
   -moz-appearance: none !important;
   }
 
+#custom-button-1:hover,
+#wrapper-custom-button-1:hover
+  {list-style-image: url("chrome://warcreate/content/icon_warcreate_hover.png");
+  -moz-appearance: none !important;
+  cursor: pointer;
+  }
+
 /* common style for all custom buttons 
 .warcreate                  
   {-moz-image-region: rect( 0px 24px 24px  0px);}
