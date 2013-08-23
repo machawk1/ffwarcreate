@@ -1,10 +1,21 @@
 var warcreate = {
 	1: function () {
-  		alert("Creating WARC!");	
+  		alert("Logging data to console...");	
+  		console.log("Request Headers");
+  		console.log(requestHeaders);
+  		console.log("ResponseHeaders");
+  		console.log(responseHeaders);
+  		console.log("Response data");
+  		console.log(responseData);
   	}
 
 }
 //console.log("test");
+
+//"Associative arrays" of data collected where the key is the URI
+var requestHeaders = [];
+var responseHeaders = [];
+var responseData = [];
 
 let httpCommunicationObserver = {
   observe : function(aSubject, aTopic, aData) {
@@ -18,6 +29,9 @@ let httpCommunicationObserver = {
 			}
 		);
 		aSubject.setRequestHeader("Cache-Control","no-cache, no-store",false);
+		
+		if(!requestHeaders[aSubject.URI.path]){requestHeaders[aSubject.URI.path] = "";}
+		requestHeaders[aSubject.URI.path] += str;
 		console.log(str);
 	}else if(aTopic == "http-on-examine-response" || aTopic == "http-on-examine-cached-response"){
 		var newListener = new TracingListener();
@@ -32,6 +46,9 @@ let httpCommunicationObserver = {
   				str += header+" "+value+"\r\n";
 			}
 		);
+		
+		if(!responseHeaders[aSubject.URI.path]){responseHeaders[aSubject.URI.path] = "";}
+		responseHeaders[aSubject.URI.path] += str;
 		console.log(str);
 	}
 	
@@ -85,7 +102,8 @@ TracingListener.prototype =
         // Copy received data as they come.
         var data = binaryInputStream.readBytes(count);
         this.receivedData.push(data);
-		console.log(data);
+        if(!responseData[request.URI.spec]){responseData[request.URI.spec] = "";}
+        responseData[request.URI.spec]+=data;
         binaryOutputStream.writeBytes(data, count);
 
         this.originalListener.onDataAvailable(request, context,
