@@ -1,5 +1,6 @@
 var CRLF = "\r\n";
 var filename = "MAT-"+(new Date().toISOString()).replace(/:|\-|\T|\Z|\./g,"") + ".warc";
+var warcConcurrentTo; //single tie-in ID, set on first request
 
 var WARCFile = function(){
 	this.warcRecords = [];
@@ -44,19 +45,27 @@ var WARCInfoRecord = function(data){
 		"WARC-Type: warcinfo" + CRLF +
 		"WARC-Date: "+ (new Date()).toISOString() + CRLF +
 		"WARC-Filename: " + filename + CRLF +
-		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
+		"WARC-Record-ID: "+guidGenerator() + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
 		"Content-Length: " + this.content.length;
 }
 var WARCRequestRecord = function(data){
 	this.content = data;
+	
+	//use the first request record as the basis to tie in the other records. 
+	if(!warcConcurrentTo){ 
+		warcConcurrentTo = guid = guidGenerator()
+	}else {
+		guid = guidGenerator()
+	}
+	
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: request" + CRLF +
 		"WARC-Target-URI: TODO" + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
-		"WARC-Concurrent-To: <urn:uuid:TODO>" + CRLF +
-		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
+		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
+		"WARC-Record-ID: " + guid + CRLF +
 		"Content-Type: application/http; msgtype=request" + CRLF +
 		"Content-Length: " + this.content.length;
 }
@@ -69,7 +78,7 @@ var WARCResponseRecord = function(data){
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		"WARC-Payload-Digest: sha1:TODO" + CRLF +
 		"WARC-IP-Address: TODO" + CRLF +
-		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
+		"WARC-Record-ID: " + guidGenerator() + CRLF +
 		"Content-Type: application/http; msgtype=response" + CRLF +
 		"Content-Length: " + this.content.length;
 }
