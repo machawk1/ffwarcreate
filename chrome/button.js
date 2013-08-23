@@ -21,8 +21,12 @@ var WARCFile = function(){
 	};
 	this.writeWARCRecords = function(){
 		var wStr = "";
+		
+		var warcInfo = new WARCInfoRecord();
+		this.warcRecords.unshift(warcInfo);
+		
 		for(var r = 0; r<this.warcRecords.length; r++){
-			wStr += this.warcRecords[r].content + CRLF + CRLF;
+			wStr += this.warcRecords[r].warcData + CRLF + CRLF + this.warcRecords[r].content + CRLF + CRLF;
 		}
 	
 		var blob = new Blob([wStr], {type: "text/plain;charset=utf-8"});
@@ -34,13 +38,50 @@ var WARCRecord = function(data){
 	this.content = data;
 };
 var WARCInfoRecord = function(data){
-	this.content = data;
+	this.content = 
+		"software: TODO" + CRLF +
+		"ip: TODO" + CRLF +
+		"hostname: TODO" + CRLF +
+		"format: WARC File Format 1.0" + CRLF +
+		"conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf" + CRLF +
+		"isPartOf: basic" + CRLF +
+		"description: TODO" + CRLF +
+		"robots: ignore" + CRLF +
+		"http-header-user-agent: Mozilla/5.0 (compatible; heritrix/3.1.2-SNAPSHOT-20130307.141538 +http://yourdomain.com)";
+	;
+	this.warcData = 
+		"WARC/1.0" + CRLF +
+		"WARC-Type: warcinfo" + CRLF +
+		"WARC-Date: TODOZ" + CRLF +
+		"WARC-Filename: TODO.warc" + CRLF +
+		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
+		"Content-Type: application/warc-fields" + CRLF +
+		"Content-Length: TODO";
 }
 var WARCRequestRecord = function(data){
 	this.content = data;
+	this.warcData = 
+		"WARC/1.0" + CRLF +
+		"WARC-Type: request" + CRLF +
+		"WARC-Target-URI: TODO" + CRLF +
+		"WARC-Date: TODOZ" + CRLF +
+		"WARC-Concurrent-To: <urn:uuid:TODO>" + CRLF +
+		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
+		"Content-Type: application/http; msgtype=request" + CRLF +
+		"Content-Length: TODO";
 }
 var WARCResponseRecord = function(data){
 	this.content = data;
+	this.warcData = 
+		"WARC/1.0" + CRLF +
+		"WARC-Type: response" + CRLF +
+		"WARC-Target-URI: TODO" + CRLF +
+		"WARC-Date: TODOZ" + CRLF +
+		"WARC-Payload-Digest: sha1:TODO" + CRLF +
+		"WARC-IP-Address: TODO" + CRLF +
+		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
+		"Content-Type: application/http; msgtype=response" + CRLF +
+		"Content-Length: 123767";
 }
 //WARCInfoRecord.inherits(WARCRecord);
 //WARCRequestRecord.inherits(WARCRecord);
