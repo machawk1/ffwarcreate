@@ -50,7 +50,7 @@ let httpCommunicationObserver = {
 		var str = aSubject.requestMethod+" "+aSubject.URI.path+" HTTP/1.1\r\n";
 		aSubject.visitRequestHeaders(
 			function(header, value){
-  				str += header+" "+value+"\r\n";
+  				str += header+": "+value+"\r\n";
 			}
 		);
 		aSubject.setRequestHeader("Cache-Control","no-cache, no-store",false);
@@ -64,11 +64,11 @@ let httpCommunicationObserver = {
         newListener.originalListener = aSubject.setNewListener(newListener);
 	
 		console.log(aSubject);
-		var str = "";
+		var str = "HTTP/1.1 "+aSubject.responseStatus+" "+aSubject.responseStatusText+" \r\n";
 		aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
-		aSubject.visitRequestHeaders(
+		aSubject.visitResponseHeaders(
 			function(header, value){
-  				str += header+" "+value+"\r\n";
+  				str += header+": "+value+"\r\n";
 			}
 		);
 		
