@@ -31,13 +31,13 @@ var WARCRecord = function(data){
 };
 var WARCInfoRecord = function(data){
 	this.content = 
-		"software: TODO" + CRLF +
-		"ip: TODO" + CRLF +
-		"hostname: TODO" + CRLF +
+		"software: Firefox WARCreate 20130823" + CRLF +
+		//"ip: TODO" + CRLF +
+		//"hostname: TODO" + CRLF +
 		"format: WARC File Format 1.0" + CRLF +
 		"conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf" + CRLF +
 		"isPartOf: basic" + CRLF +
-		"description: TODO" + CRLF +
+		"description: A test WARC file generated from the Firefox WARCreate Chrome extension." + CRLF +
 		"robots: ignore" + CRLF +
 		"http-header-user-agent: Mozilla/5.0 (compatible; heritrix/3.1.2-SNAPSHOT-20130307.141538 +http://yourdomain.com)";
 	;
