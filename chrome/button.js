@@ -7,6 +7,31 @@ var warcreate = {
   		console.log(responseHeaders);
   		console.log("Response data");
   		console.log(responseData);
+  		
+  		//console.log("requestHeaders has "+Object.keys(requestHeaders).length+" keys.");
+  		//console.log("responseHeaders has "+Object.keys(responseHeaders).length+" keys.");
+  		
+  		console.log("URI check");
+  		var uris0 = Object.keys(requestHeaders);
+  		var uris1 = Object.keys(responseHeaders);
+  		var uris2 = Object.keys(responseData);
+  		for(var uriI=0; uriI<uris0.length;uriI++){
+  			console.log(uriI+":");
+  			console.log(" "+uris0[uriI]);
+  			console.log(" "+uris1[uriI]);
+  			console.log(" "+uris2[uriI]);
+  		}
+  		
+  		var str = "";
+  		var uris = Object.keys(responseData);
+  		for(var uriI=0; uriI<uris.length;uriI++){
+  			console.log("Collecting data to write for "+uris[uriI]);
+  			str += requestHeaders[uris[uriI]]+"\r\n\r\n";
+  			str += responseHeaders[uris[uriI]]+"\r\n\r\n";
+  			str += responseData[uris[uriI]]+"\r\n\r\n";
+  		}
+		var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
+		saveAs(blob, "x.warc");
   	}
 
 }
@@ -30,8 +55,8 @@ let httpCommunicationObserver = {
 		);
 		aSubject.setRequestHeader("Cache-Control","no-cache, no-store",false);
 		
-		if(!requestHeaders[aSubject.URI.path]){requestHeaders[aSubject.URI.path] = "";}
-		requestHeaders[aSubject.URI.path] += str;
+		if(!requestHeaders[aSubject.URI.spec]){requestHeaders[aSubject.URI.spec] = "";}
+		requestHeaders[aSubject.URI.spec] += str;
 		console.log(str);
 	}else if(aTopic == "http-on-examine-response" || aTopic == "http-on-examine-cached-response"){
 		var newListener = new TracingListener();
@@ -47,8 +72,8 @@ let httpCommunicationObserver = {
 			}
 		);
 		
-		if(!responseHeaders[aSubject.URI.path]){responseHeaders[aSubject.URI.path] = "";}
-		responseHeaders[aSubject.URI.path] += str;
+		if(!responseHeaders[aSubject.URI.spec]){responseHeaders[aSubject.URI.spec] = "";}
+		responseHeaders[aSubject.URI.spec] += str;
 		console.log(str);
 	}
 	
