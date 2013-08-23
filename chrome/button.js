@@ -19,7 +19,7 @@ let httpCommunicationObserver = {
 		);
 		aSubject.setRequestHeader("Cache-Control","no-cache, no-store",false);
 		console.log(str);
-	}else if(aTopic == "http-on-examine-response"){
+	}else if(aTopic == "http-on-examine-response" || aTopic == "http-on-examine-cached-response"){
 		var newListener = new TracingListener();
         aSubject.QueryInterface(Ci.nsITraceableChannel);
         newListener.originalListener = aSubject.setNewListener(newListener);
@@ -34,6 +34,8 @@ let httpCommunicationObserver = {
 		);
 		console.log(str);
 	}
+	
+	console.log(aTopic);
   	return;
   }
 }
@@ -44,6 +46,10 @@ let observerService = Components.classes["@mozilla.org/observer-service;1"].
 
 observerService.addObserver(httpCommunicationObserver, "http-on-modify-request", false);
 observerService.addObserver(httpCommunicationObserver,"http-on-examine-response",false);
+
+observerService.addObserver(httpCommunicationObserver,"http-opening-request",false);
+observerService.addObserver(httpCommunicationObserver,"http-on-examine-cached-response",false);
+observerService.addObserver(httpCommunicationObserver,"http-on-examine-merged-response",false);
 
 gBrowser.addEventListener(
 	"load", //the designated event
