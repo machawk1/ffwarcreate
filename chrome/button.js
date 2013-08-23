@@ -8,17 +8,6 @@ var WARCFile = function(){
 		var blob = new Blob([this.contentstowrite], {type: "text/plain;charset=utf-8"});
 		saveAs(blob, this.filename);
 	};
-	this.addwarcinforecord = function(){
-		this.contentstowrite = 
-			"WARC/1.0" + CRLF +
-			"WARC-Type: warcinfo" + CRLF +
-			"WARC-Date: 2013-07-24T15:35:04Z" + CRLF +
-			"WARC-Filename: XXXXX.warc" + CRLF +
-			"WARC-Record-ID: <urn:uuid:032416>" + CRLF + //8e01286d-925b-4f29-afb5-c2cace31336c>
-			"Content-Type: application/warc-fields" + CRLF +
-			"Content-Length: 42"
-		;
-	};
 	this.writeWARCRecords = function(){
 		var wStr = "";
 		
@@ -52,7 +41,7 @@ var WARCInfoRecord = function(data){
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: warcinfo" + CRLF +
-		"WARC-Date: TODOZ" + CRLF +
+		"WARC-Date: "+ (new Date()).toISOString() + CRLF +
 		"WARC-Filename: TODO.warc" + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
@@ -64,7 +53,7 @@ var WARCRequestRecord = function(data){
 		"WARC/1.0" + CRLF +
 		"WARC-Type: request" + CRLF +
 		"WARC-Target-URI: TODO" + CRLF +
-		"WARC-Date: TODOZ" + CRLF +
+		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		"WARC-Concurrent-To: <urn:uuid:TODO>" + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
 		"Content-Type: application/http; msgtype=request" + CRLF +
@@ -76,7 +65,7 @@ var WARCResponseRecord = function(data){
 		"WARC/1.0" + CRLF +
 		"WARC-Type: response" + CRLF +
 		"WARC-Target-URI: TODO" + CRLF +
-		"WARC-Date: TODOZ" + CRLF +
+		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		"WARC-Payload-Digest: sha1:TODO" + CRLF +
 		"WARC-IP-Address: TODO" + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
