@@ -1,9 +1,10 @@
 var CRLF = "\r\n";
+var filename = "MAT-"+(new Date().toISOString()).replace(/:|\-|\T|\Z|\./g,"") + ".warc";
 
 var WARCFile = function(){
 	this.warcRecords = [];
 	this.contentstowrite = "";
-	this.filename = "foo.warc";
+	this.filename = filename;
 	this.write = function(){
 		var blob = new Blob([this.contentstowrite], {type: "text/plain;charset=utf-8"});
 		saveAs(blob, this.filename);
@@ -42,7 +43,7 @@ var WARCInfoRecord = function(data){
 		"WARC/1.0" + CRLF +
 		"WARC-Type: warcinfo" + CRLF +
 		"WARC-Date: "+ (new Date()).toISOString() + CRLF +
-		"WARC-Filename: TODO.warc" + CRLF +
+		"WARC-Filename: " + filename + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
 		"Content-Length: " + this.content.length;
