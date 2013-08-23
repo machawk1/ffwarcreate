@@ -1,7 +1,6 @@
 var CRLF = "\r\n";
 var filename = "MAT-"+(new Date().toISOString()).replace(/:|\-|\T|\Z|\./g,"") + ".warc";
 var warcConcurrentTo; //single tie-in ID, set on first request
-var WARC_Target_URI; //set once with the initial request
 
 var WARCFile = function(){
 	this.warcRecords = [];
@@ -63,7 +62,7 @@ var WARCRequestRecord = function(data){
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: request" + CRLF +
-		"WARC-Target-URI: "+ WARC_Target_URI + CRLF +
+		"WARC-Target-URI: TODO" + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
 		"WARC-Record-ID: " + guid + CRLF +
@@ -75,7 +74,7 @@ var WARCResponseRecord = function(data){
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: response" + CRLF +
-		"WARC-Target-URI: " + WARC_Target_URI + CRLF +
+		"WARC-Target-URI: TODO" + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		//"WARC-Payload-Digest: sha1:TODO" + CRLF +
 		//"WARC-IP-Address: TODO" + CRLF +
