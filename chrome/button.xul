@@ -7,6 +7,8 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script type="application/javascript"
+  src="chrome://warcreate/content/util.js"/>
+<script type="application/javascript"
   src="chrome://warcreate/content/FileSaver.js"/>
 <script type="application/javascript"
   src="chrome://warcreate/content/button.js"/>
@@ -41,7 +43,7 @@
 <toolbarbutton id="custom-button-1"
   label="Custom"
   tooltiptext="WARCreate, click for options"
-  oncommand="warcreate[1]()"
+  oncommand="warcreate['generateWARC']()"
   class="toolbarbutton-1 chromeclass-toolbar-additional warcreate"
   />
 

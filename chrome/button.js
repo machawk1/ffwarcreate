@@ -1,41 +1,98 @@
+var CRLF = "\r\n";
+
+var WARCFile = function(){
+	this.warcRecords = [];
+	this.contentstowrite = "";
+	this.filename = "foo.warc";
+	this.write = function(){
+		var blob = new Blob([this.contentstowrite], {type: "text/plain;charset=utf-8"});
+		saveAs(blob, this.filename);
+	};
+	this.addwarcinforecord = function(){
+		this.contentstowrite = 
+			"WARC/1.0" + CRLF +
+			"WARC-Type: warcinfo" + CRLF +
+			"WARC-Date: 2013-07-24T15:35:04Z" + CRLF +
+			"WARC-Filename: XXXXX.warc" + CRLF +
+			"WARC-Record-ID: <urn:uuid:032416>" + CRLF + //8e01286d-925b-4f29-afb5-c2cace31336c>
+			"Content-Type: application/warc-fields" + CRLF +
+			"Content-Length: 42"
+		;
+	};
+	this.writeWARCRecords = function(){
+		var wStr = "";
+		for(var r = 0; r<this.warcRecords.length; r++){
+			wStr += this.warcRecords[r].content + CRLF + CRLF;
+		}
+	
+		var blob = new Blob([wStr], {type: "text/plain;charset=utf-8"});
+		saveAs(blob, this.filename);
+	};
+};
+
+var WARCRecord = function(data){
+	this.content = data;
+};
+var WARCInfoRecord = function(data){
+	this.content = data;
+}
+var WARCRequestRecord = function(data){
+	this.content = data;
+}
+var WARCResponseRecord = function(data){
+	this.content = data;
+}
+//WARCInfoRecord.inherits(WARCRecord);
+//WARCRequestRecord.inherits(WARCRecord);
+//WARCResponseRecord.inherits(WARCRecord);
+
 var warcreate = {
-	1: function () {
+	"generateWARC": function () {
   		alert("Logging data to console...");	
-  		console.log("Request Headers");
+  		/*console.log("Request Headers");
   		console.log(requestHeaders);
   		console.log("ResponseHeaders");
   		console.log(responseHeaders);
   		console.log("Response data");
-  		console.log(responseData);
+  		console.log(responseData);*/
   		
   		//console.log("requestHeaders has "+Object.keys(requestHeaders).length+" keys.");
   		//console.log("responseHeaders has "+Object.keys(responseHeaders).length+" keys.");
   		
-  		console.log("URI check");
-  		var uris0 = Object.keys(requestHeaders);
-  		var uris1 = Object.keys(responseHeaders);
-  		var uris2 = Object.keys(responseData);
+  		/*console.log("URI check");
+  		var uris_requestHeaders = Object.keys(requestHeaders);
+  		var uris_responseHeaders = Object.keys(responseHeaders);
+  		var uris_responseData = Object.keys(responseData);
   		for(var uriI=0; uriI<uris0.length;uriI++){
   			console.log(uriI+":");
-  			console.log(" "+uris0[uriI]);
-  			console.log(" "+uris1[uriI]);
-  			console.log(" "+uris2[uriI]);
+  			console.log(" "+uris_requestHeaders[uriI]);
+  			console.log(" "+uris_responseHeaders1[uriI]);
+  			console.log(" "+uris_responseData[uriI]);
   		}
+  		*/
+  		
   		
   		var str = "";
   		var uris = Object.keys(responseData);
+  		var warcRecords = [];
   		for(var uriI=0; uriI<uris.length;uriI++){
   			console.log("Collecting data to write for "+uris[uriI]);
   			str += requestHeaders[uris[uriI]]+"\r\n\r\n";
+  			warcRecords.push(new WARCRequestRecord(requestHeaders[uris[uriI]]));
   			str += responseHeaders[uris[uriI]]+"\r\n\r\n";
   			str += responseData[uris[uriI]]+"\r\n\r\n";
+  			warcRecords.push(new WARCResponseRecord(responseHeaders[uris[uriI]]+CRLF+CRLF+responseData[uris[uriI]]));
   		}
-		var blob = new Blob([str], {type: "text/plain;charset=utf-8"});
-		saveAs(blob, "x.warc");
+  		var w = new WARCFile();
+  		w.warcRecords = warcRecords;
+  		console.log("warc file: ");
+  		console.log(w);
+  		//w.contentstowrite = str;
+  		w.writeWARCRecords();
+		
   	}
 
 }
-//console.log("test");
 
 //"Associative arrays" of data collected where the key is the URI
 var requestHeaders = [];
