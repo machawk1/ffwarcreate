@@ -45,7 +45,7 @@ var WARCInfoRecord = function(data){
 		"WARC-Filename: TODO.warc" + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
-		"Content-Length: TODO";
+		"Content-Length: " + this.content.length;
 }
 var WARCRequestRecord = function(data){
 	this.content = data;
@@ -57,7 +57,7 @@ var WARCRequestRecord = function(data){
 		"WARC-Concurrent-To: <urn:uuid:TODO>" + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
 		"Content-Type: application/http; msgtype=request" + CRLF +
-		"Content-Length: TODO";
+		"Content-Length: " + this.content.length;
 }
 var WARCResponseRecord = function(data){
 	this.content = data;
@@ -70,7 +70,7 @@ var WARCResponseRecord = function(data){
 		"WARC-IP-Address: TODO" + CRLF +
 		"WARC-Record-ID: <urn:uuid:TODO>" + CRLF +
 		"Content-Type: application/http; msgtype=response" + CRLF +
-		"Content-Length: 123767";
+		"Content-Length: " + this.content.length;
 }
 //WARCInfoRecord.inherits(WARCRecord);
 //WARCRequestRecord.inherits(WARCRecord);
