@@ -145,7 +145,7 @@ let httpCommunicationObserver = {
 		
 		aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 		
-		if(!WARC_Target_URI){WARC_Target_URI = aSubject.URI.spec;} //set once per WARC file generation
+		//if(!WARC_Target_URI){WARC_Target_URI = aSubject.URI.spec;} //set once per WARC file generation
 		
 		var str = aSubject.requestMethod+" "+aSubject.URI.path+" HTTP/1.1\r\n";
 		aSubject.visitRequestHeaders(
