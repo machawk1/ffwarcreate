@@ -1,0 +1,1 @@
+FFWARCreate - a [WARCreate](https://github.com/machawk1/warcreate) port for Firefox.
