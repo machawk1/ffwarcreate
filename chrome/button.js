@@ -13,6 +13,9 @@ var WARCFile = function(){
 	this.writeWARCRecords = function(){
 		var wStr = "";
 		
+		var warcMetadata = new WARCMetadataRecord();
+		this.warcRecords.unshift(warcMetadata);
+		
 		var warcInfo = new WARCInfoRecord();
 		this.warcRecords.unshift(warcInfo);
 		
@@ -38,7 +41,7 @@ var WARCInfoRecord = function(data){
 		"isPartOf: basic" + CRLF +
 		"description: A test WARC file generated from the Firefox WARCreate Chrome extension." + CRLF +
 		"robots: ignore" + CRLF +
-		"http-header-user-agent: Mozilla/5.0 (compatible; heritrix/3.1.2-SNAPSHOT-20130307.141538 +http://yourdomain.com)";
+		"http-header-user-agent: Mozilla/5.0 (compatible; FFWARCreate +http://warcreate.com)";
 	;
 	this.warcData = 
 		"WARC/1.0" + CRLF +
@@ -48,15 +51,68 @@ var WARCInfoRecord = function(data){
 		"WARC-Record-ID: "+guidGenerator() + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
 		"Content-Length: " + this.content.length;
-}
+};
+var WARCMetadataRecord = function(data){
+	this.content = 
+		"seed:" + CRLF +
+		"fetchTimeMs: TODO" + CRLF +
+		"charsetForLinkExtraction: TODO" +CRLF +
+		"usingCharsetInHTML: TODO" + CRLF;
+
+	//console.log(dom);
+
+	//TODO: include favicon in outlinks
+	
+	// Grab the relevant arrays from the DOM 
+	var anchors = dom.links;
+	var stylesheets = dom.styleSheets;
+	var images = dom.images;
+	
+	//Initialize strings of the respective element-types that will be populated with outlink data
+	var outlinks_a = "";
+	var outlinks_css = "";
+	var outlinks_img = "";
+
+	// Build the string representing the outlink data for links in the page
+	for(var linkI=0; linkI<anchors.length; linkI++){
+		outlinks_a += "outlink: "+anchors[linkI].href+" L a/@href" + CRLF;
+	}
+	
+	// Build the string representing the outlink data for stylesheets in the page
+	for(var linkI=0; linkI<stylesheets.length; linkI++){
+		outlinks_css += "outlink: "+stylesheets[linkI].href+" E link/@href" + CRLF;
+	}
+
+	// Build the string representing the outlink data for images in the page
+	for(var linkI=0; linkI<images.length; linkI++){
+		outlinks_img += "outlink: "+images[linkI].src+" E img/@src" + CRLF;
+	}
+	
+	// Concatenate the strings built for the respective element types on the page.
+	this.content += outlinks_a + outlinks_css + outlinks_img;
+	
+	
+	this.warcData = 
+		"WARC/1.0" + CRLF +
+		"WARC-Type: metadata" + CRLF +
+		"WARC-Target-URI: TODO" + CRLF +
+		"WARC-Date: " + (new Date()).toISOString() + CRLF +
+		//"WARC-Payload-Digest: sha1:TODO" + CRLF +
+		//"WARC-IP-Address: TODO" + CRLF +
+		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
+		"WARC-Record-ID: " + guidGenerator() + CRLF +
+		"Content-Type: application/warc-fields" + CRLF +
+		"Content-Length: " + this.content.length;
+};
 var WARCRequestRecord = function(data){
 	this.content = data;
+	this.gui = "garbage output, unassigned!";
 	
 	//use the first request record as the basis to tie in the other records. 
 	if(!warcConcurrentTo){ 
-		warcConcurrentTo = guid = guidGenerator()
+		warcConcurrentTo = this.guid = guidGenerator()
 	}else {
-		guid = guidGenerator()
+		this.guid = guidGenerator()
 	}
 	
 	this.warcData = 
@@ -65,10 +121,10 @@ var WARCRequestRecord = function(data){
 		"WARC-Target-URI: TODO" + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
-		"WARC-Record-ID: " + guid + CRLF +
+		"WARC-Record-ID: " + this.guid + CRLF +
 		"Content-Type: application/http; msgtype=request" + CRLF +
 		"Content-Length: " + this.content.length;
-}
+};
 var WARCResponseRecord = function(data){
 	this.content = data;
 	this.warcData = 
@@ -81,7 +137,10 @@ var WARCResponseRecord = function(data){
 		"WARC-Record-ID: " + guidGenerator() + CRLF +
 		"Content-Type: application/http; msgtype=response" + CRLF +
 		"Content-Length: " + this.content.length;
-}
+};
+
+
+
 //WARCInfoRecord.inherits(WARCRecord);
 //WARCRequestRecord.inherits(WARCRecord);
 //WARCResponseRecord.inherits(WARCRecord);
@@ -195,12 +254,13 @@ observerService.addObserver(httpCommunicationObserver,"http-on-examine-merged-re
 
 gBrowser.addEventListener(
 	"load", //the designated event
-	foo, 	//the function to execute
+	saveDOM, 	//the function to execute
 	true	//fire this every time?
 );
+var dom;
 
-function foo(event){
-	//console.log(event.target.documentElement);
+function saveDOM(event){
+	dom = event.target;
 }
 
 function CCIN(cName, ifaceName) {
