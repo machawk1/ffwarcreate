@@ -33,7 +33,7 @@ var WARCRecord = function(data){
 };
 var WARCInfoRecord = function(data){
 	this.content = 
-		"software: Firefox WARCreate 20130823" + CRLF +
+		"software: Firefox WARCreate 20130828" + CRLF +
 		//"ip: TODO" + CRLF +
 		//"hostname: TODO" + CRLF +
 		"format: WARC File Format 1.0" + CRLF +
@@ -57,7 +57,7 @@ var WARCMetadataRecord = function(data){
 		"seed:" + CRLF +
 		"fetchTimeMs: TODO" + CRLF +
 		"charsetForLinkExtraction: TODO" +CRLF +
-		"usingCharsetInHTML: TODO" + CRLF;
+		"usingCharsetInHTML: " + dom.inputEncoding + CRLF;
 
 	//console.log(dom);
 
