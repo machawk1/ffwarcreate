@@ -136,7 +136,8 @@ var WARCResponseRecord = function(data){
 		//"WARC-IP-Address: TODO" + CRLF +
 		"WARC-Record-ID: " + guidGenerator() + CRLF +
 		"Content-Type: application/http; msgtype=response" + CRLF +
-		"Content-Length: " + this.content.length;
+		"Content-Length: " + this.content.length;//(parseInt(this.content.length,10) + parseInt(this.content.split("\n").length,10) + 3);
+	//this.warcData += "Will adding " + this.content.split("\n").length + " fix this?";  
 };
 
 
@@ -145,8 +146,12 @@ var WARCResponseRecord = function(data){
 //WARCRequestRecord.inherits(WARCRecord);
 //WARCResponseRecord.inherits(WARCRecord);
 
+var addOnEnabled = false;
+
 var warcreate = {
 	"generateWARC": function () {
+		
+		if(!addOnEnabled){alert("First navigate to a web page before trying to create a WARC.");return;}
   		alert("Logging data to console...");	
   		/*console.log("Request Headers");
   		console.log(requestHeaders);
@@ -176,11 +181,11 @@ var warcreate = {
   		var warcRecords = [];
   		for(var uriI=0; uriI<uris.length;uriI++){
   			console.log("Collecting data to write for "+uris[uriI]);
-  			str += requestHeaders[uris[uriI]]+"\r\n\r\n";
+  			str += requestHeaders[uris[uriI]] + CRLF + CRLF;
   			warcRecords.push(new WARCRequestRecord(requestHeaders[uris[uriI]]));
-  			str += responseHeaders[uris[uriI]]+"\r\n\r\n";
-  			str += responseData[uris[uriI]]+"\r\n\r\n";
-  			warcRecords.push(new WARCResponseRecord(responseHeaders[uris[uriI]]+CRLF+CRLF+responseData[uris[uriI]]));
+  			str += responseHeaders[uris[uriI]] + CRLF + CRLF;
+  			str += responseData[uris[uriI]] + CRLF + CRLF + CRLF;
+  			warcRecords.push(new WARCResponseRecord(responseHeaders[uris[uriI]]+CRLF+CRLF+responseData[uris[uriI]]+CRLF));
   		}
   		var w = new WARCFile();
   		w.warcRecords = warcRecords;
@@ -201,7 +206,7 @@ var responseData = [];
 let httpCommunicationObserver = {
   observe : function(aSubject, aTopic, aData) {
   	if(aTopic == "http-on-modify-request"){
-		
+  		enableAddOn();
 		aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 		
 		//if(!WARC_Target_URI){WARC_Target_URI = aSubject.URI.spec;} //set once per WARC file generation
@@ -252,15 +257,21 @@ observerService.addObserver(httpCommunicationObserver,"http-opening-request",fal
 observerService.addObserver(httpCommunicationObserver,"http-on-examine-cached-response",false);
 observerService.addObserver(httpCommunicationObserver,"http-on-examine-merged-response",false);
 
+/* Save the DOM on page load */
 gBrowser.addEventListener(
-	"load", //the designated event
+	"load", 	//the designated event
 	saveDOM, 	//the function to execute
-	true	//fire this every time?
+	true		//fire this every time?
 );
 var dom;
 
 function saveDOM(event){
 	dom = event.target;
+}
+
+function enableAddOn(){
+	$('#custom-button-1').removeClass("disabled");
+	addOnEnabled = true;
 }
 
 function CCIN(cName, ifaceName) {

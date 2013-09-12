@@ -3,6 +3,7 @@
   {list-style-image: url("chrome://warcreate/content/icon_warcreate.png");
   -moz-appearance: none !important;
   }
+.disabled {opacity: 0.5;}
 
 #custom-button-1:hover,
 #wrapper-custom-button-1:hover
@@ -10,6 +11,7 @@
   -moz-appearance: none !important;
   cursor: pointer;
   }
+
 
 /* common style for all custom buttons 
 .warcreate                  
