@@ -7,7 +7,7 @@
     about="urn:mozilla:install-manifest"
 
     em:name="WARCreate"
-    em:description="(WARCreate description)"
+    em:description="Create WARC files from any webpage"
     em:creator="Mat Kelly"
 
     em:id="ffwarcreate@matkelly.com"
@@ -20,20 +20,6 @@
       <Description
         em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
         em:minVersion="1.4"
-        em:maxVersion="99" />
-    </em:targetApplication>
-
-    <em:targetApplication><!-- Thunderbird -->
-      <Description
-        em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
-        em:minVersion="1.4"
-        em:maxVersion="99" />
-    </em:targetApplication>
-
-    <em:targetApplication><!-- Sunbird -->
-      <Description
-        em:id="{718e30fb-e89b-41dd-9da7-e25a45638b28}"
-        em:minVersion="0.2.9"
         em:maxVersion="99" />
     </em:targetApplication>
 
