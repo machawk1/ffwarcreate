@@ -1,13 +1,13 @@
 #custom-button-1,
 #wrapper-custom-button-1
-  {list-style-image: url("chrome://warcreate/content/icon_warcreate.png");
+  {list-style-image: url("chrome://warcreate/content/images/icon_warcreate.png");
   -moz-appearance: none !important;
   }
 .disabled {opacity: 0.5;}
 
 #custom-button-1:hover,
 #wrapper-custom-button-1:hover
-  {list-style-image: url("chrome://warcreate/content/icon_warcreate_hover.png");
+  {list-style-image: url("chrome://warcreate/content/images/icon_warcreate_hover.png");
   -moz-appearance: none !important;
   cursor: pointer;
   }
