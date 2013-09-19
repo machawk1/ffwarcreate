@@ -33,7 +33,7 @@ var WARCRecord = function(data){
 };
 var WARCInfoRecord = function(data){
 	this.content = 
-		"software: Firefox WARCreate 20130828" + CRLF +
+		"software: Firefox WARCreate 20130918" + CRLF +
 		//"ip: TODO" + CRLF +
 		//"hostname: TODO" + CRLF +
 		"format: WARC File Format 1.0" + CRLF +
@@ -107,6 +107,7 @@ var WARCMetadataRecord = function(data){
 var WARCRequestRecord = function(data){
 	this.content = data;
 	this.gui = "garbage output, unassigned!";
+	this.targetUri = "";
 	
 	//use the first request record as the basis to tie in the other records. 
 	if(!warcConcurrentTo){ 
@@ -115,22 +116,41 @@ var WARCRequestRecord = function(data){
 		this.guid = guidGenerator()
 	}
 	
+	//extract the target URI
+	var dataLines = data.split("\n");
+	var host = ""; var path = ""; var protocol = ""; var protocolComponents = [];
+	for(var line=0; line<dataLines.length; line++){
+		if(dataLines[line].indexOf("GET") == 0 || dataLines[line].indexOf("POST") == 0){
+			var pathComponents = dataLines[line].split(" "); //e.g., result = [GET,/path/to/file.png,HTTP/1.1]
+			path = pathComponents[1].trim();
+			protocolComponents = pathComponents[2].split("/");
+			protocol = protocolComponents[0].toLowerCase() + "://";
+		}else if(dataLines[line].indexOf("Host:") == 0){
+			var hostComponents = dataLines[line].split(" "); //e.g., result = [GET,/path/to/file.png,HTTP/1.1]
+			host = protocol + hostComponents[1].trim();		
+		}
+		
+		if(host != "" && path != ""){break;} //short-circuit
+	}
+	this.targetUri = host + path;
+	// end target URI extraction
+	
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: request" + CRLF +
-		"WARC-Target-URI: TODO" + CRLF +
+		"WARC-Target-URI: " + this.targetUri + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
 		"WARC-Record-ID: " + this.guid + CRLF +
 		"Content-Type: application/http; msgtype=request" + CRLF +
 		"Content-Length: " + this.content.length;
 };
-var WARCResponseRecord = function(data){
+var WARCResponseRecord = function(data,targetUri){
 	this.content = data;
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: response" + CRLF +
-		"WARC-Target-URI: TODO" + CRLF +
+		"WARC-Target-URI: " + targetUri + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		//"WARC-Payload-Digest: sha1:TODO" + CRLF +
 		//"WARC-IP-Address: TODO" + CRLF +
@@ -185,7 +205,8 @@ var warcreate = {
   			warcRecords.push(new WARCRequestRecord(requestHeaders[uris[uriI]]));
   			str += responseHeaders[uris[uriI]] + CRLF + CRLF;
   			str += responseData[uris[uriI]] + CRLF + CRLF + CRLF;
-  			warcRecords.push(new WARCResponseRecord(responseHeaders[uris[uriI]]+CRLF+CRLF+responseData[uris[uriI]]+CRLF));
+  			var targetUri = warcRecords.slice(-1)[0].targetUri; //get targetURI as determined in the request record
+  			warcRecords.push(new WARCResponseRecord(responseHeaders[uris[uriI]]+CRLF+CRLF+responseData[uris[uriI]]+CRLF, targetUri));
   		}
   		var w = new WARCFile();
   		w.warcRecords = warcRecords;
