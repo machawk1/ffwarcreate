@@ -20,7 +20,7 @@ var WARCFile = function(){
 		this.warcRecords.unshift(warcInfo);
 		
 		for(var r = 0; r<this.warcRecords.length; r++){
-			wStr += this.warcRecords[r].warcData + CRLF + CRLF + this.warcRecords[r].content + CRLF + CRLF;
+			wStr += this.warcRecords[r].warcData + CRLF + CRLF + this.warcRecords[r].content + CRLF + CRLF + CRLF;
 		}
 	
 		var blob = new Blob([wStr], {type: "text/plain;charset=utf-8"});
@@ -38,10 +38,9 @@ var WARCInfoRecord = function(data){
 		//"hostname: TODO" + CRLF +
 		"format: WARC File Format 1.0" + CRLF +
 		"conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf" + CRLF +
-		"isPartOf: basic" + CRLF +
 		"description: A test WARC file generated from the Firefox WARCreate Chrome extension." + CRLF +
 		"robots: ignore" + CRLF +
-		"http-header-user-agent: Mozilla/5.0 (compatible; FFWARCreate +http://warcreate.com)";
+		"http-header-user-agent: Mozilla/5.0 (compatible; FFWARCreate +http://warcreate.com)" + CRLF;
 	;
 	this.warcData = 
 		"WARC/1.0" + CRLF +
@@ -55,8 +54,8 @@ var WARCInfoRecord = function(data){
 var WARCMetadataRecord = function(data){
 	this.content = 
 		"seed:" + CRLF +
-		"fetchTimeMs: TODO" + CRLF +
-		"charsetForLinkExtraction: TODO" +CRLF +
+		//"fetchTimeMs: TODO" + CRLF +
+		//"charsetForLinkExtraction: TODO" +CRLF +
 		"usingCharsetInHTML: " + dom.inputEncoding + CRLF;
 
 	//console.log(dom);
@@ -95,7 +94,7 @@ var WARCMetadataRecord = function(data){
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: metadata" + CRLF +
-		"WARC-Target-URI: TODO" + CRLF +
+		//"WARC-Target-URI: TODO" + CRLF +
 		"WARC-Date: " + (new Date()).toISOString() + CRLF +
 		//"WARC-Payload-Digest: sha1:TODO" + CRLF +
 		//"WARC-IP-Address: TODO" + CRLF +
@@ -147,6 +146,9 @@ var WARCRequestRecord = function(data){
 };
 var WARCResponseRecord = function(data,targetUri){
 	this.content = data;
+	var HTTPheaderBreak = this.content.substring(0,this.content.indexOf("\r\n\r\n"));
+	var linesInHTTPHeader = HTTPheaderBreak.match(/\n/g).length;
+	
 	this.warcData = 
 		"WARC/1.0" + CRLF +
 		"WARC-Type: response" + CRLF +
@@ -156,7 +158,7 @@ var WARCResponseRecord = function(data,targetUri){
 		//"WARC-IP-Address: TODO" + CRLF +
 		"WARC-Record-ID: " + guidGenerator() + CRLF +
 		"Content-Type: application/http; msgtype=response" + CRLF +
-		"Content-Length: " + this.content.length;//(parseInt(this.content.length,10) + parseInt(this.content.split("\n").length,10) + 3);
+		"Content-Length: " + this.content.length +" " + (this.content.length + linesInHTTPHeader);//(parseInt(this.content.length,10) + parseInt(this.content.split("\n").length,10) + 3);
 	//this.warcData += "Will adding " + this.content.split("\n").length + " fix this?";  
 };
 
