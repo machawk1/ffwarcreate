@@ -49,7 +49,7 @@ var WARCInfoRecord = function(data){
 		"WARC-Filename: " + filename + CRLF +
 		"WARC-Record-ID: "+guidGenerator() + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
-		"Content-Length: " + this.content.length;
+		"Content-Length: " + byteCount(this.content);// + " " +this.content.length;
 };
 var WARCMetadataRecord = function(data){
 	this.content = 
@@ -101,7 +101,7 @@ var WARCMetadataRecord = function(data){
 		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
 		"WARC-Record-ID: " + guidGenerator() + CRLF +
 		"Content-Type: application/warc-fields" + CRLF +
-		"Content-Length: " + this.content.length;
+		"Content-Length: " + byteCount(this.content);// + " " + this.content.length;
 };
 var WARCRequestRecord = function(data){
 	this.content = data;
@@ -142,7 +142,7 @@ var WARCRequestRecord = function(data){
 		"WARC-Concurrent-To: " + warcConcurrentTo + CRLF +
 		"WARC-Record-ID: " + this.guid + CRLF +
 		"Content-Type: application/http; msgtype=request" + CRLF +
-		"Content-Length: " + this.content.length;
+		"Content-Length: " + byteCount(this.content);// + " " +this.content.length;
 };
 var WARCResponseRecord = function(data,targetUri){
 	this.content = data;
@@ -158,7 +158,7 @@ var WARCResponseRecord = function(data,targetUri){
 		//"WARC-IP-Address: TODO" + CRLF +
 		"WARC-Record-ID: " + guidGenerator() + CRLF +
 		"Content-Type: application/http; msgtype=response" + CRLF +
-		"Content-Length: " + this.content.length +" " + (this.content.length + linesInHTTPHeader);//(parseInt(this.content.length,10) + parseInt(this.content.split("\n").length,10) + 3);
+		"Content-Length: " + byteCount(this.content);//this.content.length;// +" " + byteCount(this.content) + " " + (this.content.length + linesInHTTPHeader);//(parseInt(this.content.length,10) + parseInt(this.content.split("\n").length,10) + 3);
 	//this.warcData += "Will adding " + this.content.split("\n").length + " fix this?";  
 };
 
@@ -346,5 +346,57 @@ TracingListener.prototype =
             return this;
         }
         throw Components.results.NS_NOINTERFACE;
+    }
+}
+
+//attempt at resolving content-length value
+function byteCount(s) {
+ // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
+  var m = encodeURIComponent(s).match(/%[89ABab]/g);
+  return s.length + (m ? m.length : 0);
+}
+
+
+//TODO, add a contextual menu item to allow a WARC to be created without the toolbar button necessarily being present
+/*var contextMenu = require("sdk/context-menu");
+var menuItem = contextMenu.Item({
+  label: "Create WARC",
+  context: contextMenu.SelectionContext(),
+  contentScript: 'self.on("click", function () {' +
+                 '    warcreate["generateWARC"]();' +
+                 '});',
+  onMessage: function (selectionText) {
+    console.log(selectionText);
+  }
+});
+
+*/
+// This first-run code doesn't work :(
+var firstrun = Services.prefs.getBoolPref("extensions.warcreate.firstrun");
+
+var curVersion = "0.0.0";
+
+if (firstrun) {
+  Services.prefs.setBoolPref("extensions.warcreate.firstrun", false);
+  Services.prefs.setCharPref("extensions.warcreate.installedVersion", curVersion);
+   var startButtonId = "addon-button";
+    var navBar = document.getElementById("nav-bar");
+    var currentSet = navBar.getAttribute("currentset");
+    if (!currentSet)
+        currentSet = navBar.currentSet;
+
+    var curSet = currentSet.split(",");
+    if (curSet.indexOf(startButtonId) == -1)
+    {
+        var set = curSet.concat(startButtonId);
+        navBar.setAttribute("currentset", set.join(","));
+        navBar.currentSet = set.join(",");
+        document.persist(navBarId, "currentset");
+
+        try
+        {
+            BrowserToolboxCustomizeDone(true);
+        }
+        catch (e) {}
     }
 }
