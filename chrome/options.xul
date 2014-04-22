@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mydialog SYSTEM "chrome://warcreate/content/locale/prefs.dtd">
+
+
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <setting pref="extensions.warcreate.handleWARCsBy" type="radio" title="Handle Generated WARCs by">
+	  <radiogroup>
+		<radio value="download" label="Saving to Downloads Folder" />
+		<radio value="upload" label="Uploading to:" />
+	  </radiogroup>
+  </setting>
+  <setting id="downloadFileScheme" type="string" pref="extensions.warcreate.downloadFileScheme" title="Download File Naming Scheme" />
+  <setting id="uploadURI" type="string" pref="extensions.warcreate.uploadURI" title="Upload WARC to:" desc="Web address of handler" />
+
+
+
+</vbox>

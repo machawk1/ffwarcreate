@@ -11,7 +11,7 @@
     em:creator="Mat Kelly"
 
     em:id="ffwarcreate@matkelly.com"
-    em:version="0.2013.10.1"
+    em:version="0.2013.4.22"
     em:homepageURL="http://warcreate.com"
 
     em:iconURL="chrome://warcreate/content/images/icon-128.png" >
@@ -28,6 +28,9 @@
         about="urn:mozilla:extension:warcreate"
         em:package="content/warcreate/" />
     </em:file>
+    
+	<em:optionsURL>chrome://warcreate/content/options.xul</em:optionsURL>
+	<em:optionsType>2</em:optionsType>
 
   </Description>
 

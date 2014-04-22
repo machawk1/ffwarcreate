@@ -174,7 +174,7 @@ var warcreate = {
 	"generateWARC": function () {
 		
 		if(!addOnEnabled){alert("First navigate to a web page before trying to create a WARC.");return;}
-  		alert("Logging data to console...");	
+  		//alert("Logging data to console...");	
   		/*console.log("Request Headers");
   		console.log(requestHeaders);
   		console.log("ResponseHeaders");
